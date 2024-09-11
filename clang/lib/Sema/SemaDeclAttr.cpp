@@ -8534,6 +8534,39 @@ EnforceTCBLeafAttr *Sema::mergeEnforceTCBLeafAttr(
       *this, D, AL);
 }
 
+/* SkePU attribute handlers */
+static void handleSkepuAccessModeAttr(Sema &S, Decl *D, const ParsedAttr &AL)
+{
+	if (AL.getNumArgs() > 1)
+	{
+		S.Diag(AL.getLoc(), diag::err_attribute_too_many_arguments)
+			<< AL.getAttrName() << 1;
+		return;
+	}
+
+	StringRef Str;
+	SourceLocation ArgLoc;
+
+	if (AL.getNumArgs() == 0)
+		Str = "";
+	else if (!S.checkStringLiteralArgumentAttr(AL, 0, Str, &ArgLoc))
+		return;
+
+	SkepuAccessModeAttr::AccessMode Mode;
+	if (!SkepuAccessModeAttr::ConvertStrToAccessMode(Str, Mode))
+	{
+		S.Diag(AL.getLoc(), diag::warn_attribute_type_not_supported)
+			<< AL.getAttrName() << Str << ArgLoc;
+		return;
+	}
+  
+	D->addAttr(::new (S.Context)
+		SkepuAccessModeAttr(
+			S.Context,
+      AL,
+			Mode));
+}
+
 //===----------------------------------------------------------------------===//
 // Top Level Sema Entry Points
 //===----------------------------------------------------------------------===//
@@ -9347,6 +9380,40 @@ ProcessDeclAttribute(Sema &S, Scope *scope, Decl *D, const ParsedAttr &AL,
   case ParsedAttr::AT_UsingIfExists:
     handleSimpleAttribute<UsingIfExistsAttr>(S, D, AL);
     break;
+
+	/*-------------------------*/
+	/* SkePU Attributes. */
+	/*-------------------------*/
+
+	/* [[skepu::userfunction]] */
+	case ParsedAttr::AT_SkepuUserFunction:
+		handleSimpleAttribute<SkepuUserFunctionAttr>(S, D, AL);
+		break;
+
+	/* [[skepu::usertype]] */
+	case ParsedAttr::AT_SkepuUserType:
+		handleSimpleAttribute<SkepuUserTypeAttr>(S, D, AL);
+		break;
+
+	/* [[skepu::userconstant]] */
+	case ParsedAttr::AT_SkepuUserConstant:
+		handleSimpleAttribute<SkepuUserConstantAttr>(S, D, AL);
+		break;
+
+	/* [[skepu::out]] */
+	case ParsedAttr::AT_SkepuOut:
+		handleSimpleAttribute<SkepuOutAttr>(S, D, AL);
+		break;
+
+	/* [[skepu::accessmode(...)]] */
+	case ParsedAttr::AT_SkepuAccessMode:
+		handleSkepuAccessModeAttr(S, D, AL);
+		break;
+
+	/* [[skepu::instance]] */
+	case ParsedAttr::AT_SkepuInstance:
+		handleSimpleAttribute<SkepuInstanceAttr>(S, D, AL);
+		break;
   }
 }
 

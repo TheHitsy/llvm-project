@@ -35,10 +35,18 @@ if( CLANG_TOOLS_EXTRA_INCLUDE_DOCS )
 endif()
 
 # clangd has its own CMake tree. It requires threads.
-CMAKE_DEPENDENT_OPTION(CLANG_ENABLE_CLANGD "Build clangd language server" ON
+CMAKE_DEPENDENT_OPTION(CLANG_ENABLE_CLANGD "Build clangd language server" OFF
                        "LLVM_ENABLE_THREADS" OFF)
 if (CLANG_ENABLE_CLANGD)
   add_subdirectory(clangd)
+endif()
+
+# clangd has its own CMake tree. It requires threads.
+CMAKE_DEPENDENT_OPTION(CLANG_ENABLE_SKEPUD "Build skepud language server" ON
+                       "LLVM_ENABLE_THREADS" OFF)
+if (CLANG_ENABLE_SKEPUD)
+  message(STATUS "before skepud subdir")
+  add_subdirectory(skepud)
 endif()
 
 # Add the common testsuite after all the tools.

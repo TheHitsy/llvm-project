@@ -51,3 +51,7 @@ add_clang_subdirectory(libclang)
 
 add_clang_subdirectory(amdgpu-arch)
 add_clang_subdirectory(nvptx-arch)
+
+# Add the skepu-tool subdirectory
+add_clang_subdirectory(skepu-tool)
+

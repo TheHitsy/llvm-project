@@ -4127,3 +4127,59 @@ def ReadOnlyPlacement : InheritableAttr {
   let Subjects = SubjectList<[Record]>;
   let Documentation = [ReadOnlyPlacementDocs];
 }
+
+/*------------------*/
+/* SkePU attributes */
+/*------------------*/
+
+/* [[skepu::userfunction]] */
+def SkepuUserFunction : InheritableAttr
+{
+  let Spellings = [CXX11<"skepu", "userfunction">];
+  let Subjects = SubjectList<[Function]>;
+  let Documentation = [Undocumented];
+}
+
+/* [[skepu::usertype]] */
+def SkepuUserType : InheritableAttr
+{
+  let Spellings = [CXX11<"skepu", "usertype">];
+  let Subjects = SubjectList<[Record, TypedefName], ErrorDiag,
+                             "ExpectedStructOrUnionOrTypedef">;
+  let Documentation = [Undocumented];
+}
+
+/* [[skepu::userconstant]] */
+def SkepuUserConstant : InheritableAttr
+{
+  let Spellings = [CXX11<"skepu", "userconstant">];
+  let Subjects = SubjectList<[Var]>;
+  let Documentation = [Undocumented];
+}
+
+/* [[skepu::out]] */
+def SkepuOut : InheritableParamAttr
+{
+  let Spellings = [CXX11<"skepu", "out">];
+  let Subjects = SubjectList<[ParmVar]>;
+  let Documentation = [Undocumented];
+}
+
+/* [[skepu::accessmode(...)]] */
+def SkepuAccessMode : InheritableParamAttr
+{
+  let Spellings = [CXX11<"skepu", "accessmode">];
+  let Subjects = SubjectList<[ParmVar]>;
+  let Args = [EnumArgument<"Mode", "AccessMode",
+                          ["read", "write", "read_ptr", "write_ptr"],
+                          ["Read", "Write", "ReadPtr", "WritePtr"]>];
+  let Documentation = [Undocumented];
+}
+
+/* [[skepu::instance]] */
+def SkepuInstance : InheritableAttr
+{
+  let Spellings = [CXX11<"skepu", "instance">];
+  let Subjects = SubjectList<[Var]>;
+  let Documentation = [Undocumented];
+}
